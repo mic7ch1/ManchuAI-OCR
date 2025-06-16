@@ -1,0 +1,17 @@
+# Default configuration is required and will be loaded first. Model-specific configurations will override default settings when provided.
+
+default:
+  dataset_name: mic7ch/manchu_ocr_Sub2_test
+  train_split: train
+  val_split: validation
+  test_split: test
+  image_key: im
+  text_key:
+    - manchu
+    - roman
+  instruction: |
+    You are an expert OCR system for Manchu script. Extract the text from the provided image with perfect accuracy. Format your answer exactly as follows: first line with 'Manchu:' followed by the Manchu script, then a new line with 'Roman:' followed by the romanized transliteration.
+
+# Example of model-specific configuration
+# qwen-25-3b:
+#   dataset_name: mic7ch/manchu_ocr_Sub2_test

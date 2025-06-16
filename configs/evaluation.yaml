@@ -1,0 +1,27 @@
+# Default configuration is required and will be loaded first. Model-specific configurations will override default settings when provided.
+
+default:
+  validation:
+    num_samples: 100
+    step_num: best # "best", "latest" or step_number:integer are available
+  test:
+    num_samples: 218
+    step_num: best # "best", "latest" or step_number:integer are available
+
+# Example of model-specific configuration
+qwen-25-7b:
+  validation:
+    num_samples: 100
+    step_num: 75000
+  test:
+    num_samples: 218
+    step_num: 75000
+
+# CRNN model configuration
+crnn-base-3m:
+  validation:
+    num_samples: 15000
+    step_num: latest
+  test:
+    num_samples: 218
+    step_num: latest

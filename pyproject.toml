@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "manchuai-ocr"
+version = "0.1.0"
+description = "Manchu OCR training with Unsloth"
+requires-python = ">=3.11"
+
+dependencies = [
+  "torch==2.6.0",
+  "torchaudio==2.6.0",
+  "torchvision==0.21.0",
+  "triton==3.2.0",
+  "xformers==0.0.29.post3",
+  "cut-cross-entropy==25.1.1",
+  "unsloth==2025.3.15",
+  "unsloth_zoo==2025.3.13",
+  "transformers @ git+https://github.com/huggingface/transformers@8ede897c30372c7c01a2ce12323eb08295543b28",
+  "datasets==3.3.2",
+  "accelerate==1.4.0",
+  "sentencepiece==0.2.0",
+  "tokenizers==0.21.1",
+  "bitsandbytes==0.46.0",
+  "numpy==1.26.4",
+  "pandas==2.2.3",
+  "pillow==11.2.1",
+  "PyYAML==6.0.2",
+  "tqdm==4.67.1",
+  "wandb==0.19.11",
+  "openai==1.81.0",
+  "ipykernel>=6.29.5",
+  "matplotlib>=3.10.3",
+]

@@ -1,0 +1,17 @@
+# Default configuration is required and will be loaded first. Model-specific configurations will override default settings when provided.
+default:
+  max_new_tokens: 128
+  use_cache: true
+  temperature: 1.5
+  min_p: 0.1
+  return_dict_in_generate: true
+  output_scores: false
+# Example of model-specific configuration
+# qwen-25-3b:
+#   max_new_tokens: 128
+#   use_cache: true
+#   temperature: 1.5
+#   min_p: 0.1
+#   return_dict_in_generate: true
+#   output_scores: false
+

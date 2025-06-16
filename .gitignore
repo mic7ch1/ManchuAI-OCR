@@ -1,0 +1,15 @@
+data/
+logs/
+wandb/
+.DS_Store
+.venv/
+unsloth_compiled_cache/
+.vscode/
+/models/
+data_padded/
+train.log
+train.pid
+train.sh
+__pycache__/
+results/
+.ipynb_checkpoints/

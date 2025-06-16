@@ -1,0 +1,120 @@
+# Default configuration is required and will be loaded first. Model-specific configurations will override default settings when provided.
+default:
+  training:
+    per_device_train_batch_size: 4
+    gradient_accumulation_steps: 2
+    warmup_steps: 100
+    num_train_epochs: 5
+    learning_rate: 2.0e-4
+    eval_strategy: "steps"
+    eval_steps: 1000
+    fp16: false
+    bf16: false
+    logging_steps: 100
+    optim: "paged_adamw_8bit"
+    weight_decay: 0.01
+    lr_scheduler_type: "cosine_with_restarts"
+    seed: 3407
+    remove_unused_columns: false
+    dataset_text_field: ""
+    report_to: tensorboard
+    logging_dir: "logs"
+    dataset_kwargs:
+      skip_prepare_dataset: true
+    dataset_num_proc: 8
+    max_seq_length: 1536
+    load_best_model_at_end: true
+    save_strategy: "best"
+    save_total_limit: 10
+    metric_for_best_model: "manchu_cer"
+    greater_is_better: false
+
+  loading:
+    load_in_4bit: false
+    load_in_8bit: false
+    use_gradient_checkpointing: false
+    attn_implementation: eager
+
+  peft:
+    finetune_vision_layers: true
+    finetune_language_layers: true
+    finetune_attention_modules: true
+    finetune_mlp_modules: true
+    r: 32
+    lora_alpha: 64
+    lora_dropout: 0.05
+    bias: "none"
+    random_state: 3407
+    use_rslora: false
+    use_gradient_checkpointing: false
+    loftq_config: null
+    target_modules:
+      [
+        "q_proj",
+        "k_proj",
+        "v_proj",
+        "o_proj",
+        "gate_proj",
+        "up_proj",
+        "down_proj",
+      ]
+
+qwen-25-3b:
+  training:
+    warmup_steps: 3000
+    learning_rate: 2.0e-4
+    num_train_epochs: 15
+
+qwen-25-7b:
+  training:
+    warmup_steps: 2000
+    learning_rate: 2.0e-4
+    num_train_epochs: 10
+
+llama-32-11b:
+  training:
+    warmup_steps: 1000
+    learning_rate: 1.0e-4
+    num_train_epochs: 5
+  loading:
+    use_gradient_checkpointing: unsloth
+  peft:
+    use_gradient_checkpointing: unsloth
+
+crnn-base-3m:
+  training:
+    num_train_epochs: 100
+    input_height: 64
+    input_width: 480
+    batch_size: 16
+    num_workers: 4
+    learning_rate: 1e-3
+    hidden_size: 256
+    dropout: 0.1
+    max_text_length: 64
+    save_every_n_epochs: 1
+    display_every_n_steps: 100
+    warmup_epochs: 5
+    mixed_precision: true
+    optimizer:
+      type: "AdamW"
+      lr: 1e-3
+      betas: [0.9, 0.999]
+      weight_decay: 0.01
+      eps: 1e-8
+    scheduler:
+      type: "CosineAnnealingWarmRestarts"
+      T_0: 10
+      T_mult: 2
+      eta_min: 1e-6
+      last_epoch: -1
+    gradient_clipping:
+      max_norm: 1.0
+
+openai-41:
+  training:
+    num_train_epochs: 1
+    num_train_samples: 100
+    num_valid_samples: 10
+    model_to_fine_tune: "gpt-4.1-2025-04-14"
+    fine_tuning_suffix: "manchu-ocr"

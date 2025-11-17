@@ -18,9 +18,9 @@ def setup_fonts(font_dir="fonts"):
         fm.fontManager.addfont(font_file)
 
     matplotlib.rcParams["font.family"] = [
-        "DejaVu Sans",
-        "Noto Sans",
         "Noto Sans Mongolian",
+        "Noto Sans",
+        "DejaVu Sans",
         "sans-serif",
     ]
 
@@ -46,8 +46,9 @@ def generate_image(
     if not image_data or not original_manchu or not predicted_manchu:
         return
 
-    # Detect CRNN model (only predicts Manchu, roman is empty)
-    is_crnn_model = not original_roman and not predicted_roman
+    # Detect CRNN model based on prediction output: CRNN models produce no Roman prediction
+    # Treat as CRNN if the predicted Roman string is empty or None, regardless of ground-truth Roman text
+    is_crnn_model = not predicted_roman
 
     is_correct = original_manchu.strip() == predicted_manchu.strip()
 

@@ -40,6 +40,26 @@ def evaluate_openai_model(
     print(f"Start evaluating {model_name} using OpenAI API...")
     print(f"Model ID: {model_id}")
 
+    # TEMPORARY BLOCK: If test results already exist, load them and compute metrics directly,
+    # skipping the costly inference step via OpenAI API.
+    # -----------------------------------------------------------------------------
+    test_dir = evaluation_output / "test"
+    test_dir.mkdir(parents=True, exist_ok=True)
+    test_results_path = test_dir / f"{model_name}.json"
+
+    if test_results_path.exists():
+        print(
+            f"Found existing results at {test_results_path}. Calculating metrics only..."
+        )
+        with open(test_results_path, "r", encoding="utf-8") as f:
+            test_results = json.load(f)
+
+        test_metrics = calculate_metrics(test_results)
+        save_json(str(metrics_dir / f"{model_name}_test.json"), test_metrics)
+        print(f"Metrics saved to {metrics_dir / f'{model_name}_test.json'}")
+        return  # Skip the remaining inference code below
+    # -----------------------------------------------------------------------------
+
     validation_dir = evaluation_output / "validation"
     validation_dir.mkdir(parents=True, exist_ok=True)
     test_dir = evaluation_output / "test"

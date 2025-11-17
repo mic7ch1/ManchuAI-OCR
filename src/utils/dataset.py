@@ -2,7 +2,7 @@ import json
 import base64
 import io
 import random
-from datasets import Dataset, Features, Value, Image as HFImageFeatures
+from datasets import Dataset, Features, Value, Image as HFImageFeatures, load_dataset
 from PIL import Image as PILImage
 from pathlib import Path
 from tqdm import tqdm
@@ -10,6 +10,70 @@ import sys
 
 project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(project_root))
+
+
+def download_and_prepare_data(data_config):
+    """Download and prepare dataset from HuggingFace.
+
+    Args:
+        data_config: Dictionary containing dataset configuration with keys:
+            - dataset_name: HuggingFace dataset name
+            - image_key: Key for image data in dataset
+            - text_key: List of text keys (e.g., ['roman', 'manchu'])
+            - train_split, val_split, test_split: Split names
+    """
+    dataset_name = data_config["dataset_name"]
+    image_key = data_config["image_key"]
+    text_keys = data_config["text_key"]
+
+    splits = {
+        "train": data_config.get("train_split", "train"),
+        "validation": data_config.get("val_split", "validation"),
+        "test": data_config.get("test_split", "test"),
+    }
+
+    base_data_path = project_root / "data"
+
+    if not base_data_path.exists():
+        base_data_path.mkdir(parents=True, exist_ok=True)
+
+    print(f"Starting data download from {dataset_name}...")
+
+    for split_name, hf_split_name in splits.items():
+        print(f"Processing {split_name} split...")
+        output_dir = base_data_path / split_name
+        images_dir = output_dir / "images"
+        images_dir.mkdir(parents=True, exist_ok=True)
+        labels_list = []
+
+        dataset_split = load_dataset(
+            dataset_name,
+            name="default",
+            split=hf_split_name,
+            trust_remote_code=True,
+        )
+
+        for i, example in tqdm(enumerate(dataset_split)):
+            image_data = example[image_key]
+            image_filename = f"{split_name}_{i:05d}.png"
+            image_path = images_dir / image_filename
+            image_data.save(image_path)
+
+            label_entry = {"image_filename": image_filename}
+            for tk in text_keys:
+                label_entry[tk] = example[tk]
+
+            labels_list.append(label_entry)
+
+        labels_file_path = output_dir / "labels.json"
+        with open(labels_file_path, "w", encoding="utf-8") as f:
+            json.dump(labels_list, f, ensure_ascii=False, indent=4)
+
+        print(
+            f"Finished processing {split_name} split. {len(labels_list)} images saved."
+        )
+
+    print("Data download and preparation complete.")
 
 
 def load_split(data_root, split_name):
@@ -28,9 +92,12 @@ def load_split(data_root, split_name):
         return Dataset.from_dict({}, features=features)
 
     with open(label_file, "r") as f:
-        return Dataset.from_generator(
-            lambda: (
-                {
+        label_data = json.load(f)
+
+    def generator():
+        for item in label_data:
+            try:
+                yield {
                     "im": PILImage.open(
                         data_root / split_name / "images" / item["image_filename"]
                     ).convert("RGB"),
@@ -40,23 +107,27 @@ def load_split(data_root, split_name):
                         data_root / split_name / "images" / item["image_filename"]
                     ),
                 }
-                for item in json.load(f)
-            ),
-            features=features,
-        )
+            except Exception as e:
+                print(
+                    f"Warning: Failed to load image {item.get('image_filename', 'unknown')}: {e}"
+                )
+                continue
+
+    return Dataset.from_generator(generator, features=features)
 
 
 def prepare_training_datasets(train_key, val_key):
-    data_root = project_root / "data_padded"
+    data_root = project_root / "data"
     train_dataset = load_split(data_root, train_key)
     val_dataset = load_split(data_root, val_key)
     return train_dataset, val_dataset
 
 
 def prepare_evaluation_datasets(val_key, test_key):
-    data_root = project_root / "data_padded"
+    data_root = project_root / "data"
     val_dataset = load_split(data_root, val_key)
     test_dataset = load_split(data_root, test_key)
+    print("prepare_evaluation_datasets", val_dataset, test_dataset, test_key, val_key)
     return val_dataset, test_dataset
 
 

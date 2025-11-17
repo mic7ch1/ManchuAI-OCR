@@ -1,0 +1,30 @@
+# Base configuration file merging dataset and model definitions
+
+# Dataset configuration
+data:
+  dataset_name: mic7ch/manchu_sub2_new_12Nov
+  train_split: train
+  val_split: validation
+  test_split: test
+  image_key: im
+  cache: false
+  text_key:
+    - roman
+    - manchu
+  instruction: |
+    You are an expert OCR system for Manchu script. Extract the text from the provided image with perfect accuracy. Format your answer exactly as follows: first line with 'Manchu:' followed by the Manchu script, then a new line with 'Roman:' followed by the romanized transliteration.
+
+# Models configuration
+models:
+  - name: qwen-25-3b
+    base_model: unsloth/Qwen2.5-VL-3B-Instruct
+    model_class: VLM
+  - name: qwen-25-7b
+    base_model: unsloth/Qwen2.5-VL-7B-Instruct
+    model_class: VLM
+  - name: llama-32-11b
+    base_model: unsloth/Llama-3.2-11B-Vision-Instruct
+    model_class: VLM
+  - name: crnn-base-3m
+    base_model: crnn
+    model_class: CRNN

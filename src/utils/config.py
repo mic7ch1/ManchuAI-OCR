@@ -1,9 +1,13 @@
 import yaml
 from pathlib import Path
 import sys
+import shutil
+import os
 
 project_root = Path(__file__).resolve().parent.parent.parent
 sys.path.append(str(project_root))
+
+from src.utils.dataset import download_and_prepare_data
 
 
 class ConfigLoader:
@@ -11,11 +15,12 @@ class ConfigLoader:
         self.project_root = project_root
         self.config_dir = self.project_root / config_dir
 
-        self.models_config = self.load_yaml_config("models.yaml")
+        self.base_config = self.load_yaml_config("base.yaml")
         self.training_config = self.load_yaml_config("training.yaml")
         self.evaluation_config = self.load_yaml_config("evaluation.yaml")
-        self.data_config = self.load_yaml_config("data.yaml")
-        self.inference_config = self.load_yaml_config("inference.yaml")
+
+        # Check cache setting and remove data if needed
+        self._handle_data_cache()
 
     def load_yaml_config(self, file_name):
         file_path = self.config_dir / file_name
@@ -27,6 +32,34 @@ class ConfigLoader:
             raise Exception(
                 f"An unexpected error occurred while loading {file_path}: {e}"
             )
+
+    def _handle_data_cache(self):
+        """Check cache setting and remove data directory if cache is disabled."""
+        # Skip cache handling if we're already in a download process to avoid infinite recursion
+        if os.environ.get("MANCHU_OCR_DOWNLOADING") == "1":
+            return
+
+        data_config = self.base_config.get("data", {})
+        use_cache = data_config.get("cache", True)
+
+        if not use_cache:
+            data_path = self.project_root / "data"
+            if data_path.exists():
+                print(f"Cache disabled. Removing existing data directory: {data_path}")
+                shutil.rmtree(data_path)
+                print("Existing data removed successfully.")
+
+            # Download fresh data
+            print("Downloading fresh data...")
+            os.environ["MANCHU_OCR_DOWNLOADING"] = "1"  # Prevent infinite recursion
+            try:
+                download_and_prepare_data(data_config)
+                print("Data download completed successfully.")
+            except Exception as e:
+                print(f"Warning: Data download failed with error: {e}")
+            finally:
+                # Clean up environment variable
+                os.environ.pop("MANCHU_OCR_DOWNLOADING", None)
 
     def deep_merge_dicts(self, base_dict, update_dict):
         merged = base_dict.copy()
@@ -43,17 +76,19 @@ class ConfigLoader:
 
     def get_config(self, config_type, section_key=None):
         config_map = {
-            "models": self.models_config,
+            "models": self.base_config,
             "training": self.training_config,
             "evaluation": self.evaluation_config,
-            "data": self.data_config,
-            "inference": self.inference_config,
+            "data": self.base_config,
         }
 
         config_content = config_map.get(config_type)
 
         if config_type == "models":
             return config_content.get("models")
+
+        if config_type == "data":
+            return config_content.get("data")
 
         if section_key is None:
             section_key = "default"

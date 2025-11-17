@@ -65,6 +65,7 @@ def evaluate_vlm_model(
         val_dataset,
         dataset_config,
         num_samples,
+        "validation",
     )
 
     save_json(str(validation_dir / model_name) + ".json", validation_results)
@@ -88,19 +89,20 @@ def evaluate_vlm_model(
         test_dataset,
         dataset_config,
         test_num_samples,
+        "test",
     )
     save_json(str(test_dir / model_name) + ".json", test_results)
     test_metrics = calculate_metrics(test_results)
     save_json(str(metrics_dir / model_name) + "_test.json", test_metrics)
 
 
-def inference_model(model, tokenizer, dataset, dataset_config, num_samples):
+def inference_model(model, tokenizer, dataset, dataset_config, num_samples, split):
     sampled_dataset = dataset.shuffle().select(range(min(num_samples, len(dataset))))
 
     results = []
     instruction = dataset_config["instruction"]
 
-    for sample in tqdm(sampled_dataset, desc="Processing validation samples"):
+    for sample in tqdm(sampled_dataset, desc=f"Processing {split} samples"):
         image = sample[dataset_config["image_key"]]
         image_path = sample["image_path"]
         manchu_ground_truth = sample[dataset_config["text_key"][0]]

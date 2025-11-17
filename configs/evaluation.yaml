@@ -2,25 +2,37 @@
 
 default:
   validation:
-    num_samples: 100
+    num_samples: 1000
     step_num: best # "best", "latest" or step_number:integer are available
   test:
-    num_samples: 218
+    num_samples: 753
     step_num: best # "best", "latest" or step_number:integer are available
 
-# Example of model-specific configuration
+qwen-25-3b:
+  validation:
+    num_samples: 1000
+    step_num: 106000
+  test:
+    num_samples: 218
+    step_num: 106000
 qwen-25-7b:
   validation:
-    num_samples: 100
-    step_num: 75000
+    num_samples: 1000
+    step_num: 57000
   test:
     num_samples: 218
-    step_num: 75000
-
+    step_num: 57000
+llama-32-11b:
+  validation:
+    num_samples: 1
+    step_num: 21000
+  test:
+    num_samples: 753
+    step_num: 21000
 # CRNN model configuration
 crnn-base-3m:
   validation:
-    num_samples: 15000
+    num_samples: 1000
     step_num: latest
   test:
     num_samples: 218

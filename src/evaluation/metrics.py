@@ -64,6 +64,8 @@ def calculate_metrics(results):
     total_roman_f1 = 0
     total_inference_time = 0
 
+    error_counter = calculate_frequent_error(results)
+
     for result in results:
         manchu_gt = result["manchu_gt"]
         manchu_pred = result["manchu_pred"]
@@ -91,4 +93,24 @@ def calculate_metrics(results):
         "manchu_f1_score": total_manchu_f1 / total_predictions,
         "roman_f1_score": total_roman_f1 / total_predictions,
         "inference_time": total_inference_time / total_predictions,
+        "frequent_error": error_counter,
     }
+
+
+def calculate_frequent_error(results):
+    errors_manchu = {}
+    errors_roman = {}
+
+    def _accumulate(errors_dict, gt, pred):
+        max_len = max(len(gt), len(pred))
+        for i in range(max_len):
+            gt_ch = gt[i] if i < len(gt) else ""
+            pred_ch = pred[i] if i < len(pred) else ""
+            if gt_ch != pred_ch and gt_ch:
+                errors_dict[gt_ch] = errors_dict.get(gt_ch, 0) + 1
+
+    for r in results:
+        _accumulate(errors_manchu, r["manchu_gt"], r["manchu_pred"])
+        _accumulate(errors_roman, r["roman_gt"], r["roman_pred"])
+
+    return {"manchu": errors_manchu, "roman": errors_roman}

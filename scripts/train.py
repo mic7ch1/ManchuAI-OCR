@@ -1,4 +1,5 @@
 import sys
+import argparse
 from pathlib import Path
 
 project_root = Path(__file__).resolve().parent.parent
@@ -78,6 +79,18 @@ def main(target_models=None):
 
 
 if __name__ == "__main__":
-    # Possible models:
-    # qwen-25-3b, qwen-25-7b, llama-32-11b, crnn-base-3m
-    main(target_models=["qwen-25-3b", "qwen-25-7b", "llama-32-11b", "crnn-base-3m"])
+    parser = argparse.ArgumentParser(description="Train Manchu OCR models")
+    parser.add_argument(
+        "--target_model",
+        type=str,
+        nargs='*',
+        default=None,
+        help="Model(s) to train (space-separated). Available models: qwen-25-3b, qwen-25-7b, llama-32-11b, crnn-base-3m, openai-41"
+    )
+
+    args = parser.parse_args()
+
+    # If no target_model specified or empty list, train all models (None means all)
+    target_models = args.target_model if args.target_model else None
+
+    main(target_models=target_models)

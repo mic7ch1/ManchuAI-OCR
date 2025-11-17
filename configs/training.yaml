@@ -4,7 +4,7 @@ default:
     per_device_train_batch_size: 4
     gradient_accumulation_steps: 2
     warmup_steps: 100
-    num_train_epochs: 5
+    num_train_epochs: 6
     learning_rate: 2.0e-4
     eval_strategy: "steps"
     eval_steps: 1000
@@ -24,7 +24,8 @@ default:
     dataset_num_proc: 8
     max_seq_length: 1536
     load_best_model_at_end: true
-    save_strategy: "best"
+    save_strategy: "steps"
+    save_steps: 1000
     save_total_limit: 10
     metric_for_best_model: "manchu_cer"
     greater_is_better: false
@@ -90,7 +91,7 @@ crnn-base-3m:
     num_workers: 4
     learning_rate: 1e-3
     hidden_size: 256
-    dropout: 0.1
+    dropout: 0.3
     max_text_length: 64
     save_every_n_epochs: 1
     display_every_n_steps: 100
@@ -100,7 +101,7 @@ crnn-base-3m:
       type: "AdamW"
       lr: 1e-3
       betas: [0.9, 0.999]
-      weight_decay: 0.01
+      weight_decay: 0.05
       eps: 1e-8
     scheduler:
       type: "CosineAnnealingWarmRestarts"
@@ -110,11 +111,3 @@ crnn-base-3m:
       last_epoch: -1
     gradient_clipping:
       max_norm: 1.0
-
-openai-41:
-  training:
-    num_train_epochs: 1
-    num_train_samples: 100
-    num_valid_samples: 10
-    model_to_fine_tune: "gpt-4.1-2025-04-14"
-    fine_tuning_suffix: "manchu-ocr"

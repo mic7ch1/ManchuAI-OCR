@@ -1,15 +1,40 @@
+# Data and outputs
 data/
 logs/
-wandb/
-.DS_Store
-.venv/
-unsloth_compiled_cache/
-.vscode/
-/models/
-data_padded/
-train.log
-train.pid
-train.sh
-__pycache__/
 results/
+/models/
+
+# Python
+__pycache__/
+**/__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+
+# Jupyter
 .ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Training/evaluation logs and PIDs
+*.log
+*.pid
+
+# Internal scripts (not for version control)
+scripts/internal/
+
+# Model compilation cache
+unsloth_compiled_cache/
+

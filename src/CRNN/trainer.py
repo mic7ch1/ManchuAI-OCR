@@ -4,9 +4,9 @@ from torch.utils.data import DataLoader
 from torchvision import transforms
 
 from pathlib import Path
-import json
 from tqdm import tqdm
 
+from src.utils.files import load_json, save_json
 from src.CRNN.dataset import ManchuDataset
 from src.CRNN.model import CRNN
 from src.CRNN.utils import greedy_decode, build_character_dict, collate_crnn_batch
@@ -45,7 +45,7 @@ def load_model_and_tokenizer(
 
 
 class CRNNTrainer:
-    def _init__(
+    def __init__(
         self, model, tokenizer, train_dataset, eval_dataset, config, output_dir
     ):
         self.model = model
@@ -110,19 +110,14 @@ class CRNNTrainer:
     def load_history(self):
         history_path = self.output_dir / "history.json"
         if history_path.exists():
-            try:
-                with open(history_path, "r") as f:
-                    history = json.load(f)
-                    if "best" in history:
-                        self.best_loss = history["best"]
-                        print(f"Loaded existing best loss: {self.best_loss:.4f}")
-            except (json.JSONDecodeError, KeyError) as e:
-                print(f"Warning: Could not load history from {history_path}: {e}")
+            history = load_json(history_path, {})
+            if "best" in history:
+                self.best_loss = history["best"]
+                print(f"Loaded existing best loss: {self.best_loss:.4f}")
 
     def save_history(self):
         history_path = self.output_dir / "history.json"
-        with open(history_path, "w") as f:
-            json.dump({"best": self.best_loss}, f, indent=2)
+        save_json(history_path, {"best": self.best_loss})
 
     def train_epoch(self, is_training=True):
         self.model.train() if is_training else self.model.eval()
@@ -207,8 +202,10 @@ class CRNNTrainer:
                     self.config.get("save_every_n_steps")
                     and self.step % self.config["save_every_n_steps"] == 0
                 ):
+                    checkpoints_dir = self.output_dir / "checkpoints"
+                    checkpoints_dir.mkdir(parents=True, exist_ok=True)
                     step_checkpoint_path = (
-                        self.output_dir / f"ckpt_step_{self.step}.pth"
+                        checkpoints_dir / f"checkpoint-{self.step}.pth"
                     )
                     self.save_checkpoint_with_step(
                         self.step, loss.item(), step_checkpoint_path
@@ -297,21 +294,21 @@ class CRNNTrainer:
 
             if val_loss < self.best_loss:
                 self.best_loss = val_loss
-                checkpoint_path = self.output_dir / "best_model.pth"
-                self.save_checkpoint(epoch, val_loss, checkpoint_path)
                 self.save_history()
-                print(f"✓ best model updated and saved to {checkpoint_path}")
+                print(f"✓ new best validation loss: {val_loss:.4f}")
             else:
                 print(
-                    f"✗ validation loss {val_loss:.4f} >= best loss {self.best_loss:.4f}, not saving"
+                    f"  validation loss {val_loss:.4f} >= best loss {self.best_loss:.4f}"
                 )
 
             if (
                 self.config.get("save_every_n_epochs")
                 and (epoch + 1) % self.config["save_every_n_epochs"] == 0
             ):
-                self.save_checkpoint(
-                    epoch, val_loss, self.output_dir / f"checkpoint-epoch-{epoch+1}.pth"
+                checkpoints_dir = self.output_dir / "checkpoints"
+                checkpoints_dir.mkdir(parents=True, exist_ok=True)
+                self.save_checkpoint_with_step(
+                    self.step, val_loss, checkpoints_dir / f"checkpoint-{self.step}.pth"
                 )
 
         self.save_model(self.output_dir / "final_model.pth")

@@ -19,7 +19,6 @@ class ConfigLoader:
         self.training_config = self.load_yaml_config("training.yaml")
         self.evaluation_config = self.load_yaml_config("evaluation.yaml")
 
-        # Check cache setting and remove data if needed
         self._handle_data_cache()
 
     def load_yaml_config(self, file_name):
@@ -35,7 +34,6 @@ class ConfigLoader:
 
     def _handle_data_cache(self):
         """Check cache setting and remove data directory if cache is disabled."""
-        # Skip cache handling if we're already in a download process to avoid infinite recursion
         if os.environ.get("MANCHU_OCR_DOWNLOADING") == "1":
             return
 
@@ -49,7 +47,6 @@ class ConfigLoader:
                 shutil.rmtree(data_path)
                 print("Existing data removed successfully.")
 
-            # Download fresh data
             print("Downloading fresh data...")
             os.environ["MANCHU_OCR_DOWNLOADING"] = "1"  # Prevent infinite recursion
             try:
@@ -58,7 +55,6 @@ class ConfigLoader:
             except Exception as e:
                 print(f"Warning: Data download failed with error: {e}")
             finally:
-                # Clean up environment variable
                 os.environ.pop("MANCHU_OCR_DOWNLOADING", None)
 
     def deep_merge_dicts(self, base_dict, update_dict):
@@ -112,7 +108,6 @@ class ConfigLoader:
 
 
 if __name__ == "__main__":
-    # Example usage
     config_loader = ConfigLoader()
 
     print("\n--- Models Config ---")

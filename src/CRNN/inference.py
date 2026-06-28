@@ -20,7 +20,6 @@ class CRNNInference:
     def load_model(self):
         """Load CRNN model and character dictionaries from checkpoint"""
         if self.model_path.is_dir():
-            # Look for different possible checkpoint file names
             possible_names = ["best_model.pth", "model.pth", "final_model.pth"]
             checkpoint_path = None
 
@@ -35,7 +34,6 @@ class CRNNInference:
                     f"No valid checkpoint found in {self.model_path}. Looked for: {possible_names}"
                 )
         else:
-            # If it's a file path directly
             checkpoint_path = self.model_path
 
         if not checkpoint_path.exists():
@@ -44,14 +42,11 @@ class CRNNInference:
         print(f"Loading CRNN model from {checkpoint_path}")
         checkpoint = torch.load(checkpoint_path, map_location=self.device)
 
-        # Extract character dictionaries
         self.char2idx = checkpoint["char2idx"]
         self.idx2char = checkpoint["idx2char"]
 
-        # Initialize model with correct number of classes
         num_classes = len(self.char2idx)
 
-        # Require model parameters to be saved in checkpoint
         if "hidden_size" not in checkpoint:
             raise KeyError(
                 "Model checkpoint missing 'hidden_size' parameter. Please retrain the model with updated trainer."
@@ -65,12 +60,10 @@ class CRNNInference:
         dropout = checkpoint["dropout"]
         self.model = CRNN(num_classes, hidden_size, dropout)
 
-        # Load model state
         self.model.load_state_dict(checkpoint["model"])
         self.model.to(self.device)
         self.model.eval()
 
-        # Setup preprocessing transforms
         self.transform = transforms.Compose(
             [
                 transforms.Resize((64, 480)),  # Standard CRNN input size
@@ -86,11 +79,9 @@ class CRNNInference:
         if self.transform is None:
             raise RuntimeError("Model not loaded. Call load_model() first.")
 
-        # Convert to RGB if needed
         if image.mode != "RGB":
             image = image.convert("RGB")
 
-        # Apply transforms
         tensor = self.transform(image)
         return tensor.unsqueeze(0)  # Add batch dimension
 
@@ -99,14 +90,11 @@ class CRNNInference:
         if self.model is None:
             raise RuntimeError("Model not loaded. Call load_model() first.")
 
-        # Preprocess image
         input_tensor = self.preprocess_image(image).to(self.device)
 
-        # Run inference
         with torch.no_grad():
             logits = self.model(input_tensor)  # [W, B, C]
 
-        # Decode predictions using greedy decoding
         predictions = greedy_decode(logits, self.idx2char)
 
         return predictions[0] if predictions else ""

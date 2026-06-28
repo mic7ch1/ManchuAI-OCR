@@ -7,33 +7,30 @@ default:
   test:
     num_samples: 753
     step_num: best # "best", "latest" or step_number:integer are available
+  max_new_tokens: 1536
 
-qwen-25-3b:
-  validation:
-    num_samples: 1000
-    step_num: 106000
-  test:
-    num_samples: 218
-    step_num: 106000
-qwen-25-7b:
-  validation:
-    num_samples: 1000
-    step_num: 57000
-  test:
-    num_samples: 218
-    step_num: 57000
-llama-32-11b:
-  validation:
-    num_samples: 1
-    step_num: 21000
-  test:
-    num_samples: 753
-    step_num: 21000
-# CRNN model configuration
-crnn-base-3m:
-  validation:
-    num_samples: 1000
-    step_num: latest
-  test:
-    num_samples: 218
-    step_num: latest
+checkpoints:
+  num_samples: 1000
+  models:
+    - llama-32-11b
+    - qwen-25-3b
+    - qwen-25-7b
+    - crnn-base-3m
+
+replications:
+  num_iterations: 100
+  models:
+    - model: qwen-25-3b
+      checkpoint: best
+    - model: llama-32-11b
+      checkpoint: best
+    - model: qwen-25-7b
+      checkpoint: best
+    - model: crnn-base-3m
+      checkpoint: best
+    - model: qwen-25-3b
+      checkpoint: 106000
+    - model: llama-32-11b
+      checkpoint: 21000
+    - model: qwen-25-7b
+      checkpoint: 57000

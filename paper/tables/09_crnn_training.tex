@@ -1,0 +1,24 @@
+\begin{table}[t!]
+\TBL{\caption{CRNN training configuration.}\label{tab:crnn_training}}{\centering
+\begin{tabular}{l@{\hspace{1em}}l}
+\toprule
+\textbf{Parameter} & \textbf{Value} \\
+\midrule
+Dataset & 60,000 validation samples \\
+Optimizer & AdamW \\
+Initial learning rate & 1e-3 \\
+Weight decay & 0.05 \\
+LR scheduler & CosineAnnealingWarmRestarts \\
+Input image size & 64 $\times$ 480 pixels \\
+Hidden size & 256 \\
+Dropout & 0.3 \\
+Normalization & [0, 1] \\
+Training epochs & 100 \\
+Warmup epochs & 5 \\
+Mixed precision & True \\
+Gradient clipping & Max norm 1.0 \\
+Batch size & 16 \\
+\botrule%
+\end{tabular}
+}
+\end{table}

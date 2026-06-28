@@ -9,7 +9,6 @@ from src.utils.config import ConfigLoader
 from src.utils.dataset import prepare_training_datasets, convert_to_conversation
 from src.training.vlm_trainer import train_vlm_model
 from src.training.crnn_trainer import train_crnn_model
-from src.training.openai_trainer import train_openai_model
 
 
 def main(target_models=None):
@@ -66,17 +65,6 @@ def main(target_models=None):
             )
             print(f"CRNN training pipeline finished for {model_config['name']}.")
 
-        elif model_class == "OPENAI":
-            train_openai_model(
-                model_config,
-                training_config,
-                dataset_config,
-                train_dataset,
-                val_dataset,
-                training_output,
-            )
-            print(f"OpenAI training pipeline finished for {model_config['name']}.")
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train Manchu OCR models")
@@ -85,12 +73,11 @@ if __name__ == "__main__":
         type=str,
         nargs='*',
         default=None,
-        help="Model(s) to train (space-separated). Available models: qwen-25-3b, qwen-25-7b, llama-32-11b, crnn-base-3m, openai-41"
+        help="Model(s) to train (space-separated). Available models: qwen-25-3b, qwen-25-7b, llama-32-11b, crnn-base-3m"
     )
 
     args = parser.parse_args()
 
-    # If no target_model specified or empty list, train all models (None means all)
     target_models = args.target_model if args.target_model else None
 
     main(target_models=target_models)

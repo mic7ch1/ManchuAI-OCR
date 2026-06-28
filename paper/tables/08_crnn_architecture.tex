@@ -1,0 +1,24 @@
+\begin{table}[hbt!]
+\TBL{\caption{CRNN model architecture overview.}\label{tab:crnn_arch}}{\centering
+\begin{tabular}{l@{\hspace{1em}}l}
+\toprule
+\textbf{Component} & \textbf{Specification} \\
+\midrule
+\multicolumn{2}{l}{\textit{CNN Feature Extractor}} \\
+Layers & 9 convolutional layers \\
+Channel progression & 3 \textrightarrow{} 64 \textrightarrow{} 128 \textrightarrow{} 256 \textrightarrow{} 512 \\
+Input size & 64 $\times$ 480 pixels \\
+Output features & 512-dimensional per position \\
+\midrule
+\multicolumn{2}{l}{\textit{LSTM Sequence Modeler}} \\
+Architecture & 4-layer bidirectional LSTM \\
+Hidden units & 256 per direction (512 total) \\
+Dropout rate & 30\% between layers \\
+\midrule
+\multicolumn{2}{l}{\textit{Output Layer}} \\
+Type & Linear + CTC decoding \\
+Function & Character class probabilities \\
+\botrule%
+\end{tabular}
+}
+\end{table}

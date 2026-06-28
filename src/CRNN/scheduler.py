@@ -2,7 +2,7 @@ import torch.optim as optim
 
 
 class WarmupScheduler:
-    def _init__(self, optimizer, scheduler, warmup_epochs=5, warmup_factor=0.1):
+    def __init__(self, optimizer, scheduler, warmup_epochs=5, warmup_factor=0.1):
         self.optimizer = optimizer
         self.scheduler = scheduler
         self.warmup_epochs = warmup_epochs

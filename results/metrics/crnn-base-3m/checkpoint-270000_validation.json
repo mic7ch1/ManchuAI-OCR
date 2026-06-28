@@ -1,0 +1,43 @@
+{
+    "model_name": "crnn-base-3m",
+    "checkpoint": 270000,
+    "total_predictions": 1000,
+    "manchu_word_accuracy": 0.999,
+    "roman_word_accuracy": 0.0,
+    "manchu_cer": 0.00025,
+    "roman_cer": 1.0,
+    "manchu_f1_score": 0.99975,
+    "roman_f1_score": 0.0,
+    "inference_time": 3.7524421215057373,
+    "frequent_error": {
+        "manchu": {
+            "ᡝ": 3
+        },
+        "roman": {
+            "H": 620,
+            "I": 1078,
+            "Y": 172,
+            "A": 1498,
+            "D": 205,
+            "B": 615,
+            "U": 657,
+            "K": 409,
+            "J": 178,
+            "Š": 143,
+            "M": 303,
+            "O": 313,
+            "Ū": 205,
+            "N": 603,
+            "R": 421,
+            "G": 584,
+            "L": 411,
+            "E": 1056,
+            "F": 143,
+            "S": 214,
+            "C": 184,
+            "T": 241,
+            "W": 61,
+            "P": 4
+        }
+    }
+}

@@ -1,0 +1,20 @@
+\begin{table}[!htb]
+\TBL{\caption{Manchu performance comparison across validation and test datasets.}\label{tab:performance_comparison_manchu}}{\centering
+\begin{tabular}{lcccc}
+    \toprule
+    \textbf{Model} & \textbf{WA (\%)}  & \textbf{CER} & \textbf{F1} & \textbf{Time (s)} \\
+    \midrule
+    \multicolumn{5}{c}{\textit{Validation Dataset (1,000 synthetic samples)}} \\
+    \midrule
+    LLaMA-3.2-VL-11B & \textbf{98.6$\pm$0.7} & \textbf{0.00$\pm$0.00} & \textbf{0.998$\pm$0.001} & 14.7$\pm$0.2 \\
+    Qwen-2.5-VL-7B & 86.3$\pm$2.2 & 0.03$\pm$0.01 & 0.974$\pm$0.005 & 1.4$\pm$0.0 \\
+    Qwen-2.5-VL-3B & 83.5$\pm$2.4 & 0.04$\pm$0.01 & 0.968$\pm$0.006 & \textbf{1.3$\pm$0.0} \\
+    \midrule
+    \multicolumn{5}{c}{\textit{Test Dataset (753 real-world samples)}} \\
+    \midrule
+    LLaMA-3.2-VL-11B & \textbf{87.4$\pm$2.3} & \textbf{0.05$\pm$0.01} & \textbf{0.967$\pm$0.007} & 9.2$\pm$0.2 \\
+    Qwen-2.5-VL-7B & 33.7$\pm$3.5 & 0.35$\pm$0.03 & 0.759$\pm$0.017 & 1.0$\pm$0.0 \\
+    Qwen-2.5-VL-3B & 27.8$\pm$3.1 & 0.39$\pm$0.03 & 0.724$\pm$0.017 & \textbf{0.9$\pm$0.0} \\
+    \bottomrule
+\end{tabular}}
+\end{table}

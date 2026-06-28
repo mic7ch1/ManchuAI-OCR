@@ -13,7 +13,6 @@ class CRNN(nn.Module):
                 nn.Dropout2d(dropout * 0.5),  # Light dropout for CNN layers
             )
 
-        # 8-layer CNN backbone with residual shortcuts and dropout
         self.cnn = nn.Sequential(
             block(3, 64),
             block(64, 64),
@@ -38,7 +37,6 @@ class CRNN(nn.Module):
             nn.ReLU(True),  # 3×119
         )
 
-        # 4-layer Bi-LSTM with increased dropout
         self.rnn = nn.LSTM(
             512,
             hidden_size,
@@ -48,7 +46,6 @@ class CRNN(nn.Module):
             dropout=dropout,
         )
 
-        # Add dropout before final classification layer
         self.dropout = nn.Dropout(dropout)
         self.fc = nn.Linear(hidden_size * 2, num_classes)
 

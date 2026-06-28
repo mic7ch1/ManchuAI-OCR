@@ -1,7 +1,6 @@
 # Data and outputs
 data/
 logs/
-results/
 /models/
 
 # Python
@@ -15,6 +14,7 @@ __pycache__/
 venv/
 env/
 ENV/
+*.egg-info/
 
 # Jupyter
 .ipynb_checkpoints/

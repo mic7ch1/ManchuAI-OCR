@@ -1,0 +1,23 @@
+\begin{table}[hbt!]
+\TBL{\caption{Training hyperparameters for VLM fine-tuning}\label{tab:hyperparams}}{\centering
+\begin{tabular}{l@{\hspace{1em}}l}
+\toprule
+\textbf{Hyperparameter} & \textbf{Value} \\
+\midrule
+Number of epochs & 15 (3B), 10 (7B), 5 (11B) \\
+Optimizer & AdamW (8-bit) \\
+Learning rate & $2 \times 10^{-4}$ (3B), $2 \times 10^{-4}$ (7B), $1 \times 10^{-4}$ (11B) \\
+LR scheduler & Cosine with restarts \\
+Warmup steps & 3000 (3B), 2000 (7B), 1000 (11B) \\
+Per-device batch size & 4 \\
+Gradient accumulation steps & 2 \\
+Effective batch size & 8 \\
+Mixed precision & Float32 \\
+Weight decay & 0.01 \\
+Random seed & 3407 \\
+LoRA rank & 32 \\
+LoRA alpha & 64 \\
+LoRA dropout & 0.05 \\
+\botrule%
+\end{tabular}}
+\end{table}

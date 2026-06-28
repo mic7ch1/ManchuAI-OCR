@@ -4,7 +4,7 @@ from torchvision import transforms
 
 
 class ManchuDataset(PyTorchDataset):
-    def _init__(
+    def __init__(
         self,
         hf_dataset,
         char2idx,
@@ -21,10 +21,10 @@ class ManchuDataset(PyTorchDataset):
         self.max_length = max_length
         self.num_classes = len(char2idx)
 
-    def _len__(self):
+    def __len__(self):
         return len(self.hf_dataset)
 
-    def _getitem__(self, idx):
+    def __getitem__(self, idx):
         sample = self.hf_dataset[idx]
         img = sample["im"]
 

@@ -1,0 +1,20 @@
+\begin{table}[t]
+\TBL{\caption{Character-level error analysis on test and validation data}\label{tab:top_errors}}{\centering
+\begin{tabular}{lcc}
+    \toprule
+    \textbf{Model} & \textbf{Top 3 Characters} & \textbf{Share} \\
+    \midrule
+    \multicolumn{3}{c}{\textit{Validation Dataset (1,000 synthetic samples)}} \\
+    \midrule
+    LLaMA-3.2-VL-11B & \manchu{ᡝ} (E) (21.6\%), \manchu{ᠠ} (A) (13.5\%), \manchu{ᠪ} (B) (8.1\%) & 43.2\% \\
+    Qwen-2.5-VL-7B & \manchu{ᡝ} (E) (12.6\%), \manchu{ᠠ} (A) (12.4\%), \manchu{ᡳ} (I) (11.5\%) & 36.5\% \\
+    Qwen-2.5-VL-3B & \manchu{ᠠ} (A) (13.1\%), \manchu{ᡝ} (E) (11.4\%), \manchu{ᡳ} (I) (10.6\%) & 35.1\% \\
+    \midrule
+    \multicolumn{3}{c}{\textit{Test Dataset (753 real-world samples)}} \\
+    \midrule
+    LLaMA-3.2-VL-11B & \manchu{ᠠ} (A) (22.2\%), \manchu{ᡳ} (I) (16.7\%), \manchu{ᡝ} (E) (8.6\%) & 47.5\% \\
+    Qwen-2.5-VL-7B & \manchu{ᠠ} (A) (15.5\%), \manchu{ᡳ} (I) (14.1\%), \manchu{ᡝ} (E) (11.3\%) & 40.8\% \\
+    Qwen-2.5-VL-3B & \manchu{ᡳ} (I) (14.9\%), \manchu{ᠠ} (A) (12.5\%), \manchu{ᡝ} (E) (11.4\%) & 38.9\% \\
+    \bottomrule
+\end{tabular}}
+\end{table}
